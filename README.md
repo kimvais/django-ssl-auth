@@ -29,9 +29,10 @@ Restart your ngninx (sudo nginx -s restart), make sure your green unicorn is
 ### This module
 
 1. run setup.py (sudo python setup.py install)
-2. add "django_ssh_auth.SSLClientAuthMiddleware" to your MIDDLEWARE_CLASSES
-3. add "django_ssl_auth.SSLClientAuthBackend" to your AUTHENTICATION_BACKENDS
-4. add 'USERNAME_FN = lambda x: x' to your settings.py
+2. edit your `settings.py`
+    2. add `"django_ssl_auth.SSLClientAuthMiddleware"` to your `MIDDLEWARE_CLASSES`
+    3. add `"django_ssl_auth.SSLClientAuthBackend"` to your `AUTHENTICATION_BACKENDS`
+    4. add a function to map DN to username `USERNAME_FN = lambda x: x'`
 
 #### Configuration 
 If your client certificates Distinguished names to not map 1:1,
