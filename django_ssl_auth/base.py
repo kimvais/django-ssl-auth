@@ -22,22 +22,31 @@
 # THE SOFTWARE.
 #
 
+from __future__ import print_function
+import logging
 from django.conf import settings
 from django.contrib.auth import get_user_model, login, authenticate
 from django.core.exceptions import ImproperlyConfigured
 
 User = get_user_model()
 
+logger = logging.getLogger(__name__)
+
 
 class SSLClientAuthBackend(object):
     @staticmethod
     def authenticate(request=None):
         if not request.is_secure():
+            logger.debug("insecure request")
             return None
         authentication_status = request.META.get('HTTP_X_SSL_AUTHENTICATED',
                                                  None)
         if (authentication_status != "SUCCESS" or
                     'HTTP_X_SSL_USER_DN' not in request.META):
+            logger.error(
+                "HTTP_X_SSL_AUTHENTICATED marked failed or "
+                "HTTP_X_SSL_USER_DN "
+                "header missing")
             return None
         dn = request.META.get('HTTP_X_SSL_USER_DN')
         # You must defnine a function to extract username from dn, simplest is
@@ -46,9 +55,13 @@ class SSLClientAuthBackend(object):
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
+            logger.info("user {0} not found".format(username))
             return None
         if not user.is_active:
+            logger.warning("user {0} inactive".format(username))
             return None
+        logger.info("user {0} authenticated using a certificate issued to "
+                    "{1}".format(username, dn))
         return user
 
     def get_user(self, user_id):
@@ -65,6 +78,8 @@ class SSLClientAuthMiddleware(object):
         if request.user.is_authenticated():
             return
         user = authenticate(request=request)
+        if user is None or not user.is_authenticated():
+            return
         if request.META.get('X_REST_API'):
             request.user = user
         else:
