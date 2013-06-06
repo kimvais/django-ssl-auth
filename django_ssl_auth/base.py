@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright © 2013 SSH Communication Security Corporation.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+
+from django.conf import settings
+from django.contrib.auth import get_user_model, login, authenticate
+from django.core.exceptions import ImproperlyConfigured
+
+User = get_user_model()
+
+
+class SSLClientAuthBackend(object):
+    @staticmethod
+    def authenticate(request=None):
+        if not request.is_secure():
+            return None
+        authentication_status = request.META.get('HTTP_X_SSL_AUTHENTICATED',
+                                                 None)
+        if (authentication_status != "SUCCESS" or
+                    'HTTP_X_SSL_USER_DN' not in request.META):
+            return None
+        dn = request.META.get('HTTP_X_SSL_USER_DN')
+        # You must defnine a function to extract username from dn, simplest is
+        # USERNAME_FN = lambda x: x
+        username = settings.USERNAME_FN(dn)
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return None
+        if not user.is_active:
+            return None
+        return user
+
+    def get_user(self, user_id):
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
+
+
+class SSLClientAuthMiddleware(object):
+    def process_request(self, request):
+        if not hasattr(request, 'user'):
+            raise ImproperlyConfigured()
+        if request.user.is_authenticated():
+            return
+        user = authenticate(request=request)
+        if request.META.get('X_REST_API'):
+            request.user = user
+        else:
+            login(request, user)
+
