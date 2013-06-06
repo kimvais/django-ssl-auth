@@ -28,7 +28,7 @@ Restart your ngninx (sudo nginx -s restart), make sure your green unicorn is
 
 ### This module
 
-1. run setup.py (sudo python setup.py install)
+1. run setup.py (sudo python setup.py install) or install the latest release usning `pip install django_ssl_auth `
 2. edit your `settings.py`
     2. add `"django_ssl_auth.SSLClientAuthMiddleware"` to your `MIDDLEWARE_CLASSES`
     3. add `"django_ssl_auth.SSLClientAuthBackend"` to your `AUTHENTICATION_BACKENDS`
