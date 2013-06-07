@@ -25,10 +25,14 @@
 from __future__ import print_function
 import logging
 from django.conf import settings
-from django.contrib.auth import get_user_model, login, authenticate
+from django.contrib.auth import login, authenticate
 from django.core.exceptions import ImproperlyConfigured
 
-User = get_user_model()
+try:
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+except ImportError:
+    from django.contrib.auth models import User
 
 logger = logging.getLogger(__name__)
 
