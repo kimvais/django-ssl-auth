@@ -22,7 +22,6 @@
 # THE SOFTWARE.
 #
 
-from __future__ import print_function
 import logging
 from django.conf import settings
 from django.contrib.auth import login, authenticate
@@ -30,6 +29,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 try:
     from django.contrib.auth import get_user_model
+
     User = get_user_model()
 except ImportError:
     from django.contrib.auth.models import User
