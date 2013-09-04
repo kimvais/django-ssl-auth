@@ -47,7 +47,7 @@ class SSLClientAuthBackend(object):
                                                  None)
         if (authentication_status != "SUCCESS" or
                     'HTTP_X_SSL_USER_DN' not in request.META):
-            logger.error(
+            logger.warn(
                 "HTTP_X_SSL_AUTHENTICATED marked failed or "
                 "HTTP_X_SSL_USER_DN "
                 "header missing")
