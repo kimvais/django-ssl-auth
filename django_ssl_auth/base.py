@@ -84,7 +84,7 @@ class SSLClientAuthMiddleware(object):
         user = authenticate(request=request)
         if user is None or not user.is_authenticated():
             return
-        if int(request.META.get('HTTP_X_REST_API')):
+        if int(request.META.get('HTTP_X_REST_API', 0)):
             request.user = user
             logger.debug("REST API call, not logging user in")
         else:
