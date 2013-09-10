@@ -30,9 +30,9 @@ Restart your ngninx (sudo nginx -s restart), make sure your green unicorn is
 
 1. run setup.py (sudo python setup.py install) or install the latest release usning `pip install django_ssl_auth `
 2. edit your `settings.py`
-    2. add `"django_ssl_auth.SSLClientAuthMiddleware"` to your `MIDDLEWARE_CLASSES`
-    3. add `"django_ssl_auth.SSLClientAuthBackend"` to your `AUTHENTICATION_BACKENDS`
-    4. add a function to map DN to username `USERNAME_FN = lambda x: x'`
+    1. add `"django_ssl_auth.SSLClientAuthMiddleware"` to your `MIDDLEWARE_CLASSES`
+    2. add `"django_ssl_auth.SSLClientAuthBackend"` to your `AUTHENTICATION_BACKENDS`
+    3. add a function to map DN to username `USERNAME_FN = lambda x: x'`
 
 #### Configuration 
 If your client certificates Distinguished names to not map 1:1,
@@ -41,7 +41,9 @@ you need to define a USERNAME_FN in your settings.py to extract the username
 
 ## TODO
 
-Active directory integration.
+* Test smart card (fineid.fi).
+* Automatic user account creation for a valid certificate (model backend)
+* Active directory integration.
 
 ## How to get help
 
