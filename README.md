@@ -10,6 +10,7 @@ MIT license, see LICENSE.txt for full text.
 ## Setup
 
 ### SSL
+
 Set up nginx and create SSL certificates for your server and set up the paths
 to server private key, server certificate and CA certificate used to sign
 the client certificates. Example configuration file is in samples/nginx.conf
@@ -35,6 +36,7 @@ Restart your ngninx (sudo nginx -s restart), make sure your green unicorn is
 
 #### Configuration 
 There are two things you need to do in `settings.py`
+
 1. Define a function that can return a dictionary with fields that
 are required by your user model, e.g. `USER_DATA_FN = 'django_ssl_auth.fineid.user_dict_from_dn` is a sample implementation that takes the required fields from the DN of a Finnish government issued ID smart card for the `contrib.auth.models.User`.
 2. To automatically create `User`s for all valid certificate holders, set `AUTOCREATE_VALID_SSL_USERS = True`
@@ -42,6 +44,7 @@ are required by your user model, e.g. `USER_DATA_FN = 'django_ssl_auth.fineid.us
 For details, see `testapp/ssltest/settings.py`
 
 #### Smart Card support
+
 For (Finnish) instructions see `doc/fineid/FINEID.md`
 
 
