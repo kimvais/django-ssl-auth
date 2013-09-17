@@ -22,3 +22,4 @@
 # THE SOFTWARE.
 #
 from .base import SSLClientAuthBackend, SSLClientAuthMiddleware
+from . import fineid

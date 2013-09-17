@@ -24,7 +24,7 @@ e.g. http://pages.cs.wisc.edu/~zmiller/ca-howto/
 
 Restart your ngninx (sudo nginx -s restart), make sure your green unicorn is
  running and check that your https:// url loads your application and the
- _server certificate is valid_. If it is not.
+ _server certificate is valid_.
 
 ### This module
 
@@ -32,17 +32,21 @@ Restart your ngninx (sudo nginx -s restart), make sure your green unicorn is
 2. edit your `settings.py`
     1. add `"django_ssl_auth.SSLClientAuthMiddleware"` to your `MIDDLEWARE_CLASSES`
     2. add `"django_ssl_auth.SSLClientAuthBackend"` to your `AUTHENTICATION_BACKENDS`
-    3. add a function to map DN to username `USERNAME_FN = lambda x: x'`
 
 #### Configuration 
-If your client certificates Distinguished names to not map 1:1,
-you need to define a USERNAME_FN in your settings.py to extract the username
- from the DN, the above example assumes 1:1 mapping.
+There are two things you need to do in `settings.py`
+1. Define a function that can return a dictionary with fields that
+are required by your user model, e.g. `USER_DATA_FN = 'django_ssl_auth.fineid.user_dict_from_dn` is a sample implementation that takes the required fields from the DN of a Finnish government issued ID smart card for the `contrib.auth.models.User`.
+2. To automatically create `User`s for all valid certificate holders, set `AUTOCREATE_VALID_SSL_USERS = True`
+
+For details, see `testapp/ssltest/settings.py`
+
+#### Smart Card support
+For (Finnish) instructions see `doc/fineid/FINEID.md`
+
 
 ## TODO
 
-* Test smart card (fineid.fi).
-* Automatic user account creation for a valid certificate (model backend)
 * Active directory integration.
 
 ## How to get help

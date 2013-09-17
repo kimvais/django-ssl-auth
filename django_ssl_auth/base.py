@@ -26,6 +26,7 @@ import logging
 from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.core.exceptions import ImproperlyConfigured
+import imp
 
 try:
     from django.contrib.auth import get_user_model
@@ -34,12 +35,17 @@ try:
 except ImportError:
     from django.contrib.auth.models import User
 
+logging.basicConfig()
 logger = logging.getLogger(__name__)
-
 
 class SSLClientAuthBackend(object):
     @staticmethod
     def authenticate(request=None):
+        _package_name, _module_name, _function_name = settings.USER_DATA_FN.split('.')
+        _module = imp.load_module(_module_name, *imp.find_module(
+            _package_name))
+        USER_DATA_FN = getattr(getattr(_module, _module_name), _function_name)
+
         if not request.is_secure():
             logger.debug("insecure request")
             return None
@@ -53,14 +59,17 @@ class SSLClientAuthBackend(object):
                 "header missing")
             return None
         dn = request.META.get('HTTP_X_SSL_USER_DN')
-        # You must defnine a function to extract username from dn, simplest is
-        # USERNAME_FN = lambda x: x
-        username = settings.USERNAME_FN(dn)
+        user_data = USER_DATA_FN(dn)
+        username = user_data['username']
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             logger.info("user {0} not found".format(username))
-            return None
+            if settings.AUTOCREATE_VALID_SSL_USERS:
+                user = User(**user_data)
+                user.save()
+            else:
+                return None
         if not user.is_active:
             logger.warning("user {0} inactive".format(username))
             return None

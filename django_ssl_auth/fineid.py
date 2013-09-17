@@ -6,9 +6,13 @@
 # This software is protected by international copyright laws.
 #
 
+"""
+Utility functions for handling certificates on Finnish ID cards a.k.a.
+FINeID (www.fineid.fi)
+"""
+
 def _dictify_dn(dn):
     return dict(x.split('=') for x in dn.split('/') if '=' in x)
-
 
 def user_dict_from_dn(dn):
     d = _dictify_dn(dn)
