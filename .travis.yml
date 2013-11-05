@@ -5,5 +5,5 @@ python:
   - "3.3"
   - "3.4"
 install: 
-    pip install -r testapp/requirements.txt
     pip install .
+    pip install -r testapp/requirements.txt
