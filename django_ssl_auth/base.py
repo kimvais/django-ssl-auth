@@ -26,7 +26,6 @@ import logging
 from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.core.exceptions import ImproperlyConfigured
-import imp
 
 try:
     from django.contrib.auth import get_user_model
@@ -41,10 +40,9 @@ logger = logging.getLogger(__name__)
 class SSLClientAuthBackend(object):
     @staticmethod
     def authenticate(request=None):
-        _package_name, _module_name, _function_name = settings.USER_DATA_FN.split('.')
-        _module = imp.load_module(_module_name, *imp.find_module(
-            _package_name))
-        USER_DATA_FN = getattr(getattr(_module, _module_name), _function_name)
+        _module_name, _function_name = settings.USER_DATA_FN.rsplit('.', 1)
+        _module = __import__(_module_name, fromlist=['foobar'])    # yes, that 'fromlist' matters
+        USER_DATA_FN = getattr(_module, _function_name)
 
         if not request.is_secure():
             logger.debug("insecure request")
