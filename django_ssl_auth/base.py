@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+  #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2013 SSH Communication Security Corporation.
@@ -41,7 +41,7 @@ class SSLClientAuthBackend(object):
     @staticmethod
     def authenticate(request=None):
         _module_name, _function_name = settings.USER_DATA_FN.rsplit('.', 1)
-        _module = __import__(_module_name, fromlist=['foobar'])    # yes, that 'fromlist' matters
+        _module = __import__(_module_name, fromlist=[None])  # We need a non-empty fromlist
         USER_DATA_FN = getattr(_module, _function_name)
 
         if not request.is_secure():
