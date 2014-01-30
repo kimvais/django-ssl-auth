@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='django-ssl-auth',
-      version='1.0',
+      version='1.0.1',
       description='Django SSL Client Authentication',
       author='Kimmo Parviainen-Jalanko',
       author_email='kimvais@ssh.com',
