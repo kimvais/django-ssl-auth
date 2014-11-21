@@ -11,7 +11,7 @@ class Fineid(View):
                 'HTTP_X_SSL_USER_DN']),
             authentication_status=request.META['HTTP_X_SSL_AUTHENTICATED'],
             user=str(request.user))
-        return HttpResponse(pformat(ctx), mimetype="text/plain")
+        return HttpResponse(pformat(ctx), content_type="text/plain")
 
 class Test(View):
     def get(self, request, **kwargs):
@@ -20,4 +20,4 @@ class Test(View):
                 'HTTP_X_SSL_USER_DN'],
             authentication_status=request.META['HTTP_X_SSL_AUTHENTICATED'],
             user=str(request.user))
-        return HttpResponse(pformat(ctx), mimetype="text/plain")
+        return HttpResponse(pformat(ctx), content_type="text/plain")
