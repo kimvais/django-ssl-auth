@@ -26,6 +26,7 @@ import logging
 from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.core.exceptions import ImproperlyConfigured
+from importlib import import_module
 
 try:
     from django.contrib.auth import get_user_model
@@ -41,7 +42,7 @@ class SSLClientAuthBackend(object):
     @staticmethod
     def authenticate(request=None):
         _module_name, _function_name = settings.USER_DATA_FN.rsplit('.', 1)
-        _module = __import__(_module_name, fromlist=[None])  # We need a non-empty fromlist
+        _module = import_module(_module_name)  # We need a non-empty fromlist
         USER_DATA_FN = getattr(_module, _function_name)
 
         if not request.is_secure():
