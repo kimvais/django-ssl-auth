@@ -71,9 +71,6 @@ class SSLClientAuthBackend(object):
                 user.save()
             else:
                 return None
-        if not user.is_active:
-            logger.warning("user {0} inactive".format(username))
-            return None
         logger.info("user {0} authenticated using a certificate issued to "
                     "{1}".format(username, dn))
         return user
