@@ -9,5 +9,5 @@ setup(name='django-ssl-auth',
       author_email='kimvais@ssh.com',
       url='https://github.com/kimvais/django-ssl-client-auth/',
       packages=['django_ssl_auth'],
-      requires=['Django (>=1.4)']
+      requires=['Django (>=1.8)']
 )
