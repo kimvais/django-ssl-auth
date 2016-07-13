@@ -1,8 +1,13 @@
+sudo: false
 language: python
 python:
   - "2.7"
   - "3.4"
   - "3.5"
-install: 
-    pip install .
-    pip install -r testapp/requirements.txt
+env:
+  - DJANGO="django>=1.8,<1.9"
+  - DJANGO="django>=1.9,<1.10"
+install:
+  - pip install "$DJANGO"
+  - pip install .
+  - pip install -r testapp/requirements.txt
