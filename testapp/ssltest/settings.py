@@ -158,6 +158,15 @@ LOGGING = {
     }
 }
 
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = ('/login')
+
 AUTHENTICATION_BACKENDS = ('django_ssl_auth.SSLClientAuthBackend', )
 USER_DATA_FN = 'django_ssl_auth.fineid.user_dict_from_dn'
 AUTOCREATE_VALID_SSL_USERS = True
+
+# This setting is used for testing so that the test cases can simulate
+# an https connection to Django. Please see the Django documentation
+# and understand this setting before considering using it in your own site.
+# https://docs.djangoproject.com/en/1.9/ref/settings/#secure-proxy-ssl-header
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
