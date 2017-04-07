@@ -26,6 +26,11 @@ import logging
 from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.core.exceptions import ImproperlyConfigured
+
+try:
+    from django.utils.deprecation import MiddlewareMixin  # Django 1.10+
+except ImportError:
+    MiddlewareMixin = object  # Django < 1.10
 from django.http import HttpResponseRedirect
 from django.shortcuts import resolve_url
 from importlib import import_module
@@ -82,7 +87,7 @@ class SSLClientAuthBackend(object):
             return None
 
 
-class SSLClientAuthMiddleware(object):
+class SSLClientAuthMiddleware(MiddlewareMixin):
     def process_request(self, request):
         if not hasattr(request, 'user'):
             raise ImproperlyConfigured()
