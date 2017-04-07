@@ -39,7 +39,7 @@ There are two things you need to do in `settings.py`
 
 1. Define a function that can return a dictionary with fields that
 are required by your user model, e.g. `USER_DATA_FN = 'django_ssl_auth.fineid.user_dict_from_dn` is a sample implementation that takes the required fields from the DN of a Finnish government issued ID smart card for the `contrib.auth.models.User`.
-2. To automatically create `User`s for all valid certificate holders, set `AUTOCREATE_VALID_SSL_USERS = True`
+2. To automatically create `User`s for all valid certificate holders, set `AUTOCREATE_VALID_SSL_USERS = True`. Auto-created users will be set to inactive by default, consider using the [`User.is_active`](https://docs.djangoproject.com/en/1.9/ref/contrib/auth/#django.contrib.auth.models.User.is_active) field in your [`LOGIN_DIRECT_URL`](https://docs.djangoproject.com/en/1.9/ref/settings/#login-redirect-url) view to notifying the user of their status.
 
 For details, see `testapp/ssltest/settings.py`
 
