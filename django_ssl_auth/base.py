@@ -26,6 +26,8 @@ import logging
 from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.core.exceptions import ImproperlyConfigured
+from django.http import HttpResponseRedirect
+from django.shortcuts import resolve_url
 from importlib import import_module
 
 try:
@@ -69,9 +71,6 @@ class SSLClientAuthBackend(object):
                 user.save()
             else:
                 return None
-        if not user.is_active:
-            logger.warning("user {0} inactive".format(username))
-            return None
         logger.info("user {0} authenticated using a certificate issued to "
                     "{1}".format(username, dn))
         return user
@@ -89,13 +88,17 @@ class SSLClientAuthMiddleware(object):
             raise ImproperlyConfigured()
         if request.user.is_authenticated():
             return
-        user = authenticate(request=request)
-        if user is None or not user.is_authenticated():
-            return
         if int(request.META.get('HTTP_X_REST_API', 0)):
-            request.user = user
+            user = authenticate(request=request)
+            if user is None or not user.is_authenticated():
+                return
             logger.debug("REST API call, not logging user in")
-        else:
+            request.user = user
+        elif request.path_info == settings.LOGIN_URL:
+            user = authenticate(request=request)
+            if user is None or not user.is_authenticated():
+                return
             logger.info("Logging user in")
             login(request, user)
+            return HttpResponseRedirect(resolve_url(settings.LOGIN_REDIRECT_URL))
 
