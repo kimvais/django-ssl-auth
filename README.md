@@ -1,4 +1,4 @@
-django-ssl-client-auth
+django-ssl-auth
 ======================
 
 SSL authentication backend &amp; middleware for Django for authenticating users with SSL client certificates
