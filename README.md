@@ -1,3 +1,9 @@
+
+# The authoritative repository for this project is maintained by [Joey Wilhelm](https://github.com/tarkatronic/django-ssl-auth)
+
+<< Kimvais, 2017-10-14
+
+
 django-ssl-auth
 ======================
 
